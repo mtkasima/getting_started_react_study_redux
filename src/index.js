@@ -1,12 +1,29 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { createStore } from 'redux';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const initialState = {
+  tasks: []
+};
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const addTask = (task) => ({
+  type: 'ADD_TASK',
+  payload: {
+    task
+  }
+});
+
+function tasksReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'ADD_TASK':
+      return {
+        ...state,
+        tasks: state.tasks.concat([action.payload.task])
+      };
+    default:
+      return state;
+  }
+}
+
+const store = createStore(tasksReducer);
+
+store.dispatch(addTask('Storeを学ぶ'));
+console.log(store.getState());
