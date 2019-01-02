@@ -23,7 +23,12 @@ function tasksReducer(state = initialState, action) {
   }
 }
 
+function handleChange() {
+  console.log(store.getState());
+}
+
 const store = createStore(tasksReducer);
 
+const unsubscribe = store.subscribe(handleChange);
+
 store.dispatch(addTask('Storeを学ぶ'));
-console.log(store.getState());
