@@ -1,22 +1,37 @@
+import React from 'react';
+import { render } from 'react-dom';
 import { createStore, replaceReducer } from 'redux';
 
 const initialState = {
-  tasks: []
+  task: '',
+  tasks: [],
 };
+
+const inputTask = (task) => ({
+  type: 'INPUT_TASK',
+  payload: {
+    task,
+  }
+});
 
 const addTask = (task) => ({
   type: 'ADD_TASK',
   payload: {
-    task
+    task,
   }
 });
 
 function tasksReducer(state = initialState, action) {
   switch (action.type) {
+    case 'INPUT_TASK':
+      return {
+        ...state,
+        task: action.payload.task,
+      };
     case 'ADD_TASK':
       return {
         ...state,
-        tasks: state.tasks.concat([action.payload.task])
+        tasks: state.tasks.concat([action.payload.task]),
       };
     default:
       return state;
@@ -41,10 +56,31 @@ function resetReducer(state = initialState, action) {
 
 const store = createStore(tasksReducer);
 
-store.dispatch(addTask('Storeを学ぶ'));
-console.log(store.getState());
+function TodoAPP({store}) {
+  const { task, tasks } = store.getState();
+  return (
+    <div>
+      <input type="text" onChange={(e) => store.dispatch(inputTask(e.target.value))}/>
+      <button type="button" onClick={() => store.dispatch(addTask(task))}>add</button>
+      <ul>
+        {
+          tasks.map(function (item, i) {
+            return (
+              <li key={i}>{item}</li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  );
+}
 
-store.replaceReducer(resetReducer);
+function renderApp(store) {
+  render(
+    <TodoAPP store={store}/>,
+    document.getElementById('root')
+  );
+}
 
-store.dispatch(resetTask());
-console.log(store.getState());
+store.subscribe(() => renderApp(store));
+renderApp(store);
