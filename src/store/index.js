@@ -5,6 +5,7 @@ import {
 } from 'redux';
 import { routerReducer, routerMiddleware } from 'react-router-redux';
 import tasksReducer from '../reducers/tasks';
+import logger from 'redux-logger';
 
 export default function createStore(history) {
   return reduxCreateStore(
@@ -13,7 +14,8 @@ export default function createStore(history) {
       router: routerReducer,
     }),
     applyMiddleware(
-      routerMiddleware(history)
+      routerMiddleware(history),
+      logger
     )
   );
 }
